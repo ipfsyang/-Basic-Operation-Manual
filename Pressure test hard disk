@@ -1,1 +1,48 @@
+压测硬盘IO两者兼用
+#sudo bench_disk.sh
+＃！/ bin / bash
+  
+MS = 10
 
+函数ins_fio {
+  回声安装Fio
+  须藤apt install fio -y> / dev / null 2>＆1
+}
+
+功能凳{
+  磁盘= $ 1
+  echo fio Bench $ disk 8G write 512k $ MS s
+  sudo fio -filename = $ disk -direct = 1 -iodepth 32 -thread -rw = write -bs = 512k -size = 8G -numjobs = 30 -runtime = $ MS -group_reporting -name = benchtest | grep写
+
+  echo fio Bench $ disk 8G read 512k $ MS s
+  sudo fio -filename = $ disk -direct = 1 -iodepth 32 -thread -rw = read -bs = 512k -size = 8G -numjobs = 30 -runtime = $ MS -group_reporting -name = benchtest | grep读取
+}
+
+功能主{
+  ins_fio
+  为“ cat $ 1”中的di；做
+    板凳$ di
+  完毕
+}
+
+如果 [ ！-n“ $ 1”];然后
+    回声“ ./bench_disk.sh [dev_file]”
+    回显“示例dev_file：”
+    回声“ / dev / sda”
+    回声“ / dev / sdb”
+别的
+    主要$ 1
+科幻
+
+
+-------------------------------------
+#sudo vim disk.txt
+/ dev / sda
+/ dev / sdb
+/ dev / sdc
+/ dev / sdd
+...
+有多少个盘就添加多少盘符，出系统盘以外
+------
+运行方式：
+须藤./bench_disk.sh disk.txt
