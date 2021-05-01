@@ -1,0 +1,184 @@
+#运维手册 
+##初定版1.0.1
+###编辑人：杨在远
+一、	日常维护注意事项：
+
+1、workerP与workerC在使用手动安装系统后，务必跟软件方取得要求，满足对方的需求。
+现已要求手动安装系统（ubuntu20.04版本）后，IP地址的格式必须按照yaml语言的缩进发来写。请各位运维人员严格遵守。
+
+例：配置IP sudo vi /etc/netplan/*
+###### #This is the network config written by 'subiquity'
+    network:
+      ethernets:
+        enp1s0f0:
+          addresses: [10.10.65.x/24]
+          gateway4: 10.10.65.254
+          nameservers:
+            addresses: [114.114.114.114,202.96.128.86,8.8.8.8]
+  
+miner与post做bond，格式如下：
+     
+###### #This is the network config written by 'subiquity'
+    network:
+     ethernets:
+       enp1s0f1: {}
+       enp1s0f0: {}
+    renderer: networkd
+    bonds:
+      bond0:
+        addresses: [10.10.11.x/24]
+        gateway4: 10.10.11.254
+        nameservers:
+          addresses: [202.96.128.86,114.114.114.114,8.8.8.8]
+        interfaces:
+          - enp1s0f0
+          - enp1s0f1
+        parameters:
+          mode: 802.3ad
+          lacp-rate: fast
+          transmit-hash-policy: layer3+4
+如果与其他bond的mac地址冲突，需要手动修改Mac地址
+  ubuntu18.04--20.04永久修改mac地址
+------------------------------------------
+    sudo vi /lib/systemd/system/rc-local.service
+    添加install模块
+    ----------------------
+    [Install]  
+    WantedBy=multi-user.target  
+    Alias=rc-local.service  
+    ------------------------
+    创建rc.local
+    ------------------
+    sudo touch /etc/rc.local
+    sudo ln -s /lib/systemd/system/rc.local.service /etc/systemd/system/ 
+    sudo vi /etc/rc.local  //添加以下内容
+    #!/bin/sh -e
+    sudo ifconfig bond0 down
+    sudo ifconfig bond0 hw ether 70:B5:E8:2E:6F:C2
+    sudo ifconfig bond0 up
+    exit 0
+    ------------------------
+    sudo chmod +x /etc/rc.local 
+    sudo systemctl enable rc-local
+    sudo systemctl start rc-local.service
+    sudo systemctl status rc-local.service
+2、删除swap.img文件,执行以下一条命令即可。
+    
+     sudo swapoff -a && sudo rm -rf /swap.img 
+     cd /
+     ls -lh 查看是否还有swap.img文件。
+ 
+二、	涉及到安全和保护数据禁止使用root用户与# rm -rf / 命令。只能使用软件方指定的用户登录。
+
+三、	Ubuntu20.04系统组软raid
+例：将4块8T的U.2做两个raid0
+
+    lsblk //查看硬盘
+ 
+    sudo fdisk /dev/nvme0n1 //分区nvme0n1
+
+将4快盘都格式化，重复依次输入g，p，w，重启生效fdisk是一个创建和维护分区表的程序，它兼容DOS类型的分区表、BSD或者SUN类型的磁盘列表。重启后执行：
+  
+    sudo mkfs.xfs -f /dev/nvme0n1
+    sudo mkfs.xfs -f /dev/nvme1n1  //格式化两块盘
+    sudo mdadm -Cv /dev/md0 -l 0 -n 2 /dev/nvme0n1 dev/dev/nvme1n1 //组建raid0
+    sudo mdadm -Dsv > /etc/mdadm.conf && sudo update-initramfs -u 将raid信息添加到mdadm.comf配置文件中，并更新到开机程序中
+    sudo cat /etc/mdstat //cat /proc/mdstat查看raid信息
+    sudo mkfs.xfs /dev/md0  //格式化md0为xfs
+    ---------------------------------------
+    sudo mkfs.xfs -f /dev/nvme2n1
+    sudo mkfs.xfs -f /dev/nvme3n1  //格式化两块盘
+    sudo mdadm -Cv /dev/md0 -l 0 -n 2 /dev/nvme2n1 dev/dev/nvme3n1 //组建raid0
+    sudo mdadm -Dsv > /etc/mdadm.conf && sudo update-initramfs -u 将raid信息添加到mdadm.comf配置文件中，并更新到开机程序中
+    sudo cat /etc/mdstat //cat /proc/mdstat查看raid信息
+    sudo mkfs.xfs /dev/md1 //格式化md1为xfs
+
+以上就是组建raid的方式，重启试下是否掉raid。
+
+解释上面的参数语法：将dos格式转换成gpt格式，如不转换，在linux系统中是格式化不了的
+   
+     fdisk命令选项：
+     g  --转换成gpt格式
+     p  --打印当前硬盘信息
+     w  --保存当前所有操作
+     mkfs命令参数选项：
+     -f  强制格式化
+     -t  格式类型
+     mdadm命令参数选项：
+     -C 创建RAID
+     -n 指定磁盘个数
+     -l 指定raid类型
+     -v 显示详细信息
+四、为了有更好的的挖矿环境，需要把BIOS进行优化一下只针对超威H11系列的主板，设置
+     
+    NB configuration→→IOMMU //设置成disable
+    指定linux系统内核 (GNU/Linux 5.4.0-26-generic x86_64)
+    镜像包 ubuntu-20.04-ipfs.iso //如需要向相关人员索取
+   针对泰安主板的设置如下：
+     
+    AMD CBS→→NBIO→→IOMMU //设置成disable
+   针对
+
+五、故障排查思路
+  
+ 1、看日志
+    
+    vi /etc/var/log/syslog.1 //主要检查syslog、syslog.1、kernel、kernel.1,寻找高亮的信息
+ 2、命令查找error
+    
+    dmesg |grep -i error //查找报错，只看今天的报错信息 dmesg -T
+ 3、使用命令查看相关信息
+
+    tail /var/log/syslog  //列出相关信息
+六、更换坏的U.2，只针对装有U.2、nvme的服务器，如：workerP
+
+    
+    如没安装此工具，请进行安装
+    sudo apt install nvme-cli
+    sudo nvme list //查看nvme、u.2硬盘的容量、型号、盘位等信息
+    换盘的情况下，请再三与软件方取得联系。获取同意后方可换硬盘
+
+七、针对存储服务器的查询方式如下：
+   
+    sudo yum install smartmontools //先安装smart工具包
+    sudo smartctl -a /dev/sd* //查询你想要查询的盘符 如：sda、sdb，可以看到SN码进行更换
+    iostat //使用此命令监控硬盘的信息，如未找到此命令的情况下，请执行下面这条命令
+    yum install -y sysstat //安装此工具即可查询
+    换盘的情况下，请再三与软件方取得联系。获取同意后方可换硬盘
+   查看机械硬盘由多少时，输入一下命令即可
+    
+     [root@root~]# lsscsi -s |grep -i  14.0TB -c
+     36
+
+   另外，针对sata盘也可以做初步判断 一般看一下几个指标：
+     
+     smartctl -A /dev/sdx (x为所查看盘符，eg a / b ..)
+     输出主要看以下五项的RAW_VALUE,值大于1就可以考虑换盘，并不是所有的盘都支持S.M.A.R.T.属性并且支持查看的。
+     SMART 5 – Reallocated_Sector_Count.重定位磁区计数
+     SMART 187 – Reported_Uncorrectable_Errors.报告不可纠正错误
+     SMART 188 – Command_Timeout.通信超时
+     SMART 197 – Current_Pending_Sector_Count.等候重定的扇区计数
+     SMART 198 – Offline_Uncorrectable.无法校正的扇区计数
+   测试硬盘的读写速度是否正常：
+      
+     sudo fio --filename=/dev/sda --direct=1 --rw=write --bs=4k --ioengine=libaio  --iodepth=256 --runtime=20 --numjobs=4 --time_based --group_reporting --name=iops-test-job --eta-newline=1
+
+八、更换内存，如软件方说内存有问题需要更换的，运维人员就要在现场确认那根内存有问题，如何判断。进不去系统的，卡在logo界面上，这时就需要ipmi管理界面了，来查看哪一根内存有问题。
+    
+    dmesg -T|grep -i error //只要错误信息里显示P1B1或者P0D3的字符，内存就需要更换，也明确的给你指出是哪一根内存出先error了
+注：在系统中出现B1实际需要更换的是B2，因为系统识别内存是从0开始的，而主板识别内存是从1开始的，主板上都有标识的
+
+九、GPU故障，软件方如反馈少GPU或者执行某条命令时卡死，如:nvidia-smi,这时运维人员在现场测试如下
+    
+    nvidia-smi //显示GPU信息，如在这卡死。请先结束相关进程在关机，把GPU全部拔出来一张一张测试
+    No devices were found  //无法识别此设备。这时你只需要把这张GPU更换掉即可
+注：掉GPU这种情况很难判断，需要和软件方配合测试哪块GPU有问题，现场实时关注
+
+    nvidia-smi -L //每5秒刷新GPU信息
+十、时常注意机房服务的温度，特别是温度不均匀是需要及时向IDC值班室反馈，让他们及时做好调整。
+
+十一、监控端口，因我们需要启动某个程序时，发现端口号被占用，而这个程序无法正常启动起来。
+    
+    netstat -ntlp //查看占用端口
+    kill + pid号 //结束进程 如：kill 1234
+    在重启程序即可
