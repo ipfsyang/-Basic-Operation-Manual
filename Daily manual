@@ -182,3 +182,11 @@ miner与post做bond，格式如下：
     netstat -ntlp //查看占用端口
     kill + pid号 //结束进程 如：kill 1234
     在重启程序即可
+十二、阵列卡故障处理方式
+     故障一：断电服务器重启后，在logo界面提示AVAGO EFI SAS Driver is unhealthy红字。
+     处理方式：拔掉硬盘后，开机进入BIOS Setup界面，选择Advanced--Driver Health--AVAGO EFI SAS Driver，按【enter】，选择阵列卡，再一次按【enter】，根据提示输入【c】和【y】即可从新识别阵列卡。
+     故障二：在阵列卡进入启动界面时：initialization..\转不出来时，也无法进入下一步。
+     处理方式：拔掉硬盘后，看是否能初始化成功，并能进入下一步。如果可以。就能确定有硬盘坏掉了，进入系统后一块一块的插上，centos7系统会提示硬盘报错，并识别不到盘。ubuntu系统是识别不到盘，不给任何提示
+，如果插上全部硬盘并能识别出来，说明整列卡没有问题
+     故障三：当插上阵列卡进如管理界面，识别不到。
+     处理方式：直接换卡。
