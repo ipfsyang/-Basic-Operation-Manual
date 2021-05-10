@@ -1,3 +1,4 @@
+vim check-disk.sh
 #!/bin/bash
 #############
 #
@@ -39,3 +40,37 @@ case $1 in
 		echo -e " nvme :  check local-nvme disk list info..."
 		exit 0;;
 esac
+
+vi bench-disk.sh
+#!/bin/bash
+MS=10
+function ins_fio {
+  echo install fio
+  sudo apt install fio -y > /dev/null 2>&1
+}
+
+function bench {
+  disk=$1
+  echo -e "fio bench \033[35m$disk \033[32m8G write 512k $MS s\033[0m"
+  sudo fio -filename=$disk -direct=1 -iodepth 32 -thread -rw=write -bs=512k -size=8G -numjobs=30 -runtime=$MS -group_reporting -name=benchtest | grep WRITE
+
+  echo -e "fio bench \033[35m$disk \033[34m8G read 512k  $MS s\033[0m"
+  sudo fio -filename=$disk -direct=1 -iodepth 32 -thread -rw=read  -bs=512k -size=8G -numjobs=30 -runtime=$MS -group_reporting -name=benchtest | grep READ
+}
+
+function main {
+  ins_fio
+  for di in `cat $1`; do
+    bench $di
+  done
+}
+
+if [ ! -n "$1" ] ;then
+    echo "./bench_disk.sh  [dev_file]"
+    echo "   example dev_file:"
+    echo "   /dev/sda"
+    echo "   /dev/sdb"
+else
+    main $1
+fi
+
