@@ -1,0 +1,28 @@
+一、shell概述
+自动化批量系统初始化程序 （update，软件安装，时区设置，安全策略...）
+自动化批量软件部署程序（LAMP,LNMP,Tomcat,LVS,Nginx）
+管理应用程序（KVM,集群管理扩容，MYSQL）
+日志分析处理程序（PV,UV,200,!200,grep/awk,top 100）
+自动化备份恢复程序。（mysql完全备份、增量备份+cron）
+自动化管理程序（批量远程修改密码，软件升级配置更新）
+自动化信息采集及监控程序（收集系统/应用状态信息，cpu，mem，disk，tcp status，net）
+配合zabbix信息采集（收集系统/应用状态信息，cpu，mem，disk，tcp status，net）
+自动化扩容（增加云主机————业务上线）
+  zabbix监控CPU 80%+|-50% python api aws/ec2+shell script（业务上线）
+shell可以做任何事（一切取决于业务需求）  
+程序语言执行：
+C 
+JAVA
+Shell
+Python
+程序是由哪些组成：逻辑+数据
+ --------------------------------------------
+ 二、java python shell执行方式对比
+ 例：sudo vim shell01.sh
+#!/bin/bash
+ping -c 1 www.baidu.com &>/dev/null && echo "www.baidu.com successful" || echo "www.baidu.com failed!" //如能ping通的话返回successful值，失败则返回failed
+&&：命令之间使用&&连接，实现逻辑与的功能只有在&&左边的命令返回真（命令返回值 $? == 0），&& 右边的命令才会被执行只要有一个命令返回假（命令返回值 $? == 1），后面的命令就不会被执行。  
+||：命令之间使用||连接，实现逻辑或的功能，只有在||左边的命令返回假（命令返回值 ?==1），||右边的命令才会被执行。这和c语言中的逻辑或语法功能相同，即实现短路逻辑或操作。只要有一个命令返
+回真（命令返回值? == 0），后面的命令就不会被执行。
+&>：混合输出重定向，包括真确输出和错误输出
+/dev/null：表示的是一个黑洞，通常用于丢弃不需要的数据输出，或者用于输入流的空文件
