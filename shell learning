@@ -26,3 +26,44 @@ ping -c 1 www.baidu.com &>/dev/null && echo "www.baidu.com successful" || echo "
 回真（命令返回值? == 0），后面的命令就不会被执行。
 &>：混合输出重定向，包括真确输出和错误输出
 /dev/null：表示的是一个黑洞，通常用于丢弃不需要的数据输出，或者用于输入流的空文件
+三、bash中调用python expect
+#!/bin/bash
+ping -c 1 www.baidu.com &>/dev/null && echo "www.baidu.com successful" || echo "www.baidu.com failed!" 这一段是shell语言
+
+/usr/bin/python <<-EOF
+print "HELLO WORLD"
+EOF 这一段是python语言  <<-EOF是开始，结束语就应该用EOF来结束，这个可以变更的
+四、login、nologin特性
+在切换用户时，加-，才能执行/etc/profile和~/.bashrc
+login shell su - alice 切换到root目录下
+/etc/profile
+/etc/bashrc  这两个是系统级
+
+nologin shell su alice 不切换到root目录下
+~/.etc/profile
+~/.etc/bashrc 这两个是用户级
+~/.bash_logout
+~/.bash_history 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
