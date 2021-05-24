@@ -20,9 +20,9 @@ miner与post做bond，格式如下：
      
 ###### #This is the network config written by 'subiquity'
     network:
-     ethernets:
-       enp1s0f1: {}
-       enp1s0f0: {}
+      ethernets:
+        enp1s0f1: {}
+        enp1s0f0: {}
     renderer: networkd
     bonds:
       bond0:
@@ -37,6 +37,7 @@ miner与post做bond，格式如下：
           mode: 802.3ad
           lacp-rate: fast
           transmit-hash-policy: layer3+4
+移动网络的DNS [211.136.192.6]
 如果与其他bond的mac地址冲突，需要手动修改Mac地址
   ubuntu18.04--20.04永久修改mac地址
 ------------------------------------------
@@ -82,16 +83,18 @@ miner与post做bond，格式如下：
     sudo mkfs.xfs -f /dev/nvme0n1
     sudo mkfs.xfs -f /dev/nvme1n1  //格式化两块盘
     sudo mdadm -Cv /dev/md0 -l 0 -n 2 /dev/nvme0n1 dev/dev/nvme1n1 //组建raid0
-    sudo mdadm -Dsv > /etc/mdadm.conf && sudo update-initramfs -u 将raid信息添加到mdadm.comf配置文件中，并更新到开机程序中
+    sudo cat /proc/mdstat >~/mdstat_bak //备份数据，以免丢失
+    sudo su root && sudo mdadm -Dsv >> /etc/mdadm.conf && sudo update-initramfs -u 将raid信息添加到mdadm.comf配置文件中，并更新到开机程序中
     sudo cat /etc/mdstat //cat /proc/mdstat查看raid信息
     sudo mkfs.xfs /dev/md0  //格式化md0为xfs
     ---------------------------------------
     sudo mkfs.xfs -f /dev/nvme2n1
     sudo mkfs.xfs -f /dev/nvme3n1  //格式化两块盘
     sudo mdadm -Cv /dev/md0 -l 0 -n 2 /dev/nvme2n1 dev/dev/nvme3n1 //组建raid0
-    sudo mdadm -Dsv > /etc/mdadm.conf && sudo update-initramfs -u 将raid信息添加到mdadm.comf配置文件中，并更新到开机程序中
+    sudo cat /proc/mdstat >~/mdstat_bak //备份数据，以免丢失
+    sudo su root && sudo mdadm -Dsv >> /etc/mdadm.conf && sudo update-initramfs -u 将raid信息添加到mdadm.comf配置文件中，并更新到开机程序中
     sudo cat /etc/mdstat //cat /proc/mdstat查看raid信息
-    sudo mkfs.xfs /dev/md1 //格式化md1为xfs
+    sudo mkfs.xfs /dev/md0  //格式化md0为xfs
 
 以上就是组建raid的方式，重启试下是否掉raid。
 
