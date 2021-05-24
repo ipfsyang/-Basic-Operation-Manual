@@ -75,14 +75,14 @@ king@ansible-10:~$ cat >file <<EOF
 9.shell通配符（元字符）
 * 匹配多个字符
 ? 匹配一个字符
-[]匹配括号中任意一个字符 [abc] abc中的一个字母   
+[] 匹配括号中任意一个字符 [abc] abc中的一个字母   
   [a-z]匹配a-z任意一个字符
   [0-9]匹配0-9任意一个字符
   [a-zA-Z0-9]匹配a-zA-Z0-9任意一个字符
   [^a-zA-Z0-9]括号中带有^字符，就是取反值，意思就是不匹配a-zA-Z0-9任意一个字符，而匹配的符号不如_ - +之类的。
-()
-
-
+() 在子shell中执行（cd /boot;ls）(umask 077;touch file100)
+{} 集合touch file{1..9}
+    #mkdir /home/{111,222} mkdir -pv /home/{333/{aaa,bbb},444}
 
 
 
