@@ -44,10 +44,21 @@ nologin shell su alice 不切换到root目录下
 ~/.etc/bashrc 这两个是用户级
 ~/.bash_logout
 ~/.bash_history 
+五、GNU/bash shell 特点
+1.命令和文件自动补齐
+2.命令历史记忆功能 !number、!staring、!$、!!、^R
+3.别名功能 alias、unalias cp、~username/.bashrc、\cp -rf /etc/hosts
+4.前后台作业控制 &、nohup、^c、^z、screen、bg %1、fg %1
+5.输入输出重定向 0,1,2 > >> 2>> 2> 2>&1 &> cat < /etc/hosts cat<<EOF
+root@ansible-10:~# cat <<EOF >file
+> 111
+> 222
+> 333
+> EOF
+这是输入到file文件里的
+6.管道 | tee
 
-
-
-
+  
 
 
 
