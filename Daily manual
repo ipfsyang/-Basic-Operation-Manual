@@ -152,7 +152,10 @@ miner与post做bond，格式如下：
     
      [root@root~]# lsscsi -s |grep -i  14.0TB -c
      36
-
+   最简单的硬盘定位如下：
+     # cd /dev/disk/by-path
+     # ll 查看详细对应的逻辑槽位及物理槽位
+   centos和ubuntu系统通用
    另外，针对sata盘也可以做初步判断 一般看一下几个指标：
      
      smartctl -A /dev/sdx (x为所查看盘符，eg a / b ..)
