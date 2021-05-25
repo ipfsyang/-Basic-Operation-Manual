@@ -38,7 +38,8 @@ miner与post做bond，格式如下：
           lacp-rate: fast
           transmit-hash-policy: layer3+4
 移动网络的DNS [211.136.192.6]
-如果与其他bond的mac地址冲突，需要手动修改Mac地址
+如果与其他bond的mac地址冲突，有两种方法，二选一即可
+方法一：需要手动修改Mac地址
   ubuntu18.04--20.04永久修改mac地址
 ------------------------------------------
     sudo vi /lib/systemd/system/rc-local.service
@@ -63,6 +64,10 @@ miner与post做bond，格式如下：
     sudo systemctl enable rc-local
     sudo systemctl start rc-local.service
     sudo systemctl status rc-local.service
+方法二：随机生成mac地址，前提是做bond之前操作，否则重启才能生效
+    sudo rm -f /etc/machine-id
+    sudo systemd-machine-id-setup
+Initializing machine ID from random generator. //这是一条提示语：正在初始化计算机ID，将随机随机生成。
 2、删除swap.img文件,执行以下一条命令即可。
     
      sudo swapoff -a && sudo rm -rf /swap.img 
