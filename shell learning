@@ -83,6 +83,9 @@ king@ansible-10:~$ cat >file <<EOF
 () 在子shell中执行（cd /boot;ls）(umask 077;touch file100)
 {} 集合touch file{1..9}
     #mkdir /home/{111,222} mkdir -pv /home/{333/{aaa,bbb},444}
+    #mkdir /home/king/{0..35} //连续创建多个目录 
+    #rm -rf /home/king/{0..35} //连续删除多个目录 
+    
 
 
 
