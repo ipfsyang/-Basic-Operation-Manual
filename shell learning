@@ -101,7 +101,40 @@ king@ansible-10:~$ cat >file <<EOF
 \e[1;31m 红色字体 30--37是文本颜色，40-47是背景颜色
 \e[0m表示重置颜色
 例子： echo -e "\e[1;31mthis is test.txt \e[0m" //输出红色字体的this is test.txt，并重置文本颜色
+      echo -e "\e[1;49m\e[1;30mthis is test.txt \e[0m" //也可以背景颜色和字体混合使用
+      echo -e "\e[1;41mthis is test.txt" \e[0m"//输出红色背景的this is test.txt，并重置文本颜色
+三、shell变量
+  什么是shell变量？  变量的类型
+  变量的定义方式
+  变量的运算
+  变量"内容"的删除和替换
+  ping -c 1 $ip &>/dev/null && echo -e "$ip \e[1;31msuccessful \e[1;0m" || echo -e "$ip \e[1;31mfailed! \e[1;0m" 
 
+  
+  shell变量? 用一个特定的字符串去表示不固定的内容
+  变量的类型：
+    1.自定义变量
+      定义变量：变量名=变量值 变量名必须以字母或下划线开头，区分大小写 例：ip=10.10.13.1格式
+      引用变量：$变量名或$变量值
+      查看变量：echo $变量名 set（所有变量：包括自定义变量和环境变量）
+      取消变量：unset 变量名
+      作用范围：仅在当前shell中有效
+    2.环境变量
+      定义环境变量:
+         方法一：export back_dir2=/home/backup
+         方法二：export back_dir将自定义变量转换成环境变量
+      引用环境变量：$变量名或${变量值}
+      查看环境变量：echo $变量名 env 例如：env |grep back_dir2
+      取消环境变量：unset
+      变量作用范围：在当前shell和子shell中有效
+#!/bin/bash
+ip=10.10.13.101
+  if ping -c 1 $ip &>/dev/null;
+  then
+          echo -e "$ip \e[1;31msuccessful... \e[1;0m"
+  else
+          echo -e "$ip \e[1;31mfailed... \e[1;0m"
+  fi
 
 
 
