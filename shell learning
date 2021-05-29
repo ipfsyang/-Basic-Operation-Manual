@@ -81,17 +81,26 @@ king@ansible-10:~$ cat >file <<EOF
   [a-zA-Z0-9]匹配a-zA-Z0-9任意一个字符
   [^a-zA-Z0-9]括号中带有^字符，就是取反值，意思就是不匹配a-zA-Z0-9任意一个字符，而匹配的符号不如_ - +之类的。
 () 在子shell中执行（cd /boot;ls）(umask 077;touch file100)
-{} 集合touch file{1..9}
+{} 集合touch file{1..9} //批量创建多个文件
     #mkdir /home/{111,222} mkdir -pv /home/{333/{aaa,bbb},444}
     #mkdir /home/king/{0..35} //连续创建多个目录 
     #rm -rf /home/king/{0..35} //连续删除多个目录 
+    #cp -rv /ec/sysconfig/network-scripts/ifcfg-eth0 /etc/sysconfig/network-scripts/ifcfs-eth0.old
+     cp -rv /ec/sysconfig/network-scripts/{ifcfg-eth0,ifcfg-eth0.old} //这是上一条命令的缩写（前面一部分是相同的）
+     cp -rv /ec/sysconfig/network-scripts/ifcfg-eth0{,.lod} //这是上一条的缩写（，逗号隔开）
+ \ 转义符，让元字符回归本意
+    #echo *
+    #echo \*  //打印*字符
+    #touch ipfs\ sheng //创建两个文本 如果不加空格就会创建一个文本
     
-
-
-
-
-
-
+    #mkdir \\
+    echo -e "atb" //打印atb字母
+    echo -e "a\tb" //输出a b字母这里的\t是tab的意思
+    echo -e "a\nb" //输出a b字母这里的\n是换行的意思
+ 10.echo带颜色输出文本
+\e[1;31m 红色字体 30--37是文本颜色，40-47是背景颜色
+\e[0m表示重置颜色
+例子： echo -e "\e[1;31mthis is test.txt \e[0m" //输出红色字体的this is test.txt，并重置文本颜色
 
 
 
