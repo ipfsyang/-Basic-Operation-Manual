@@ -108,9 +108,9 @@ king@ansible-10:~$ cat >file <<EOF
   变量的定义方式
   变量的运算
   变量"内容"的删除和替换
-  ping -c 1 $ip &>/dev/null && echo -e "$ip \e[1;31msuccessful \e[1;0m" || echo -e "$ip \e[1;31mfailed! \e[1;0m" 
-
-  
+  #!/bin/bash
+  ip=10.10.13.101
+  ping -c 1 $ip &>/dev/null && echo -e "$ip \e[1;31msuccessful \e[1;0m" || echo -e "$ip \e[1;31mfailed! \e[1;0m"  
   shell变量? 用一个特定的字符串去表示不固定的内容
   变量的类型：
     1.自定义变量
@@ -135,6 +135,160 @@ ip=10.10.13.101
   else
           echo -e "$ip \e[1;31mfailed... \e[1;0m"
   fi
+-------------------------------------------------------
+     C语言   局部变量  VS 全局变量
+     Shell  自定义变量 VS 环境变量
+   3.位置变量
+     $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10}
+        例：./shell0o.sh 10.10.13.101 ipfs yang //10.10.13.101将作为参数赋值给$1,ipfs将作为参数赋值给$2,yang将作为参数赋值给$3,依次类推
+   4.预定义变量
+     $0 脚本名
+     $* 所有的参数
+     $@ 所有的参数
+     $# 参数的个数
+     $$ 当前进程的PID
+     $! 上一个后台经常的PID
+     $? 上一个命令的返回值 0表示成功
+  变量赋值的方式：
+    1.显示赋值
+      变量名=变量值
+      例: ip=10.10.10.10
+          school="dongguang guangzhou" //值有空格的时候，就不许用双引号引起来，不然会报错
+          today1=$(data +%F) 这是赋予值给today1 （）和``反引号的意思是一样的
+          today2=`data +%F` 这是赋予值给today2
+    2.read 从键盘读入变量值
+      read 变量名
+      read -p "提示信息: "变量名
+      read -t 5 -p "提示信息: "变量名  //-t time的缩写，5庙后提示信息消失
+      read -n 2 变量名  //-n 是输出的结果只能有两个字符
+      例: read -p "please input a ip: " ip  //注意双引号后面必须有空格，不然赋予值会失败
+          read ip1 ip2 ip3 ip4 //这里有4个变量需要赋值，而不能只输入一个，要不然后3个变量都没值‘
+      sudo vi read.sh
+      #!/bin/bash
+      read -p "please input name: " name
+      read -p "please input sex: " sex
+      read -p "please input age: " age
+      echo "you input name is:$name: ,$sex: , $age: "
+      也可以合并写在一起
+      #!/bin/bash
+      read -p "please input name, sex, age " name sex age //双引号前后必须有空格，要不然达不到预想
+      echo "you input name is: $name,$sex, $age" //标点符号空格很重要的，需要在实践中操作
+    定义或引用变量时注意事项：
+      ""弱引用
+      ''强引用
+      例：单引号与双引号的区别
+        king@ansible-10:~/shell$school=1000phone
+        king@ansible-10:~/shell$ echo "${school} is good" 双引号中的变量依然是变量，而已会转化成变量值
+        1000phone is good
+        king@ansible-10:~/shell$ echo '${school} is good' 单引号中没有变量的，即使有，也会变成没有
+        ${school} is good
+       ``命令替换 等价于$()反引号中的shell命令优先被执行。
+         sudo touch `date +%F`_file.txt ``反引号与$()是一样的
+         2021-05-31_file.txt
+         sudo touch $(date +%F)_file1.txt 
+         2021-05-31_file1.txt
+       例:df -h |grep '/$'|awk '{print $4}' 我想把这条命令的值得到的结果正确的赋予在disk1，或disk2上
+          disk1=`df -h |grep '/$'|awk '{print $4}'` 这是一种方式，如果改成双引号的话这是打印整条命令
+          disk2=$(df -h |grep '/$'|awk '{print $4}') 这是另种方式
+          echo $disk1
+          echo $disk2 这两个变量值查询结果都是一样的
+          1.变量的运算 整数小数
+            方法一:$[] 
+            echo $[52-4] + - / * %
+            echo $[52/2]
+            方法二：let 脚本中常用
+            let sum=2+3；echo $sum
+            let i++;echo $i
+            方法三：$(())脚本中常用
+            sum=$((1+2)); echo $sum   + - /* %
+            echo $(((5-3)*2))
+          2.小数运算
+           #!/bin/bash
+           mem_used=`free -m |grep  '^Mem:'|awk '{print $3}'`
+           mem_total=`free -m |grep  '^Mem:'|awk '{print $2}'`
+           mem_percent=$((mem_used*100/mem_total))
+
+           echo "Current memory usage percentage： $mem_percent"
+           这是计算当前内存使用的百分比：内存总空间/已使用的空间
+          3.i++和++i的区别
+            一种是对变量值的影响
+            i=1
+            let i++
+            echo $i
+            2
+            j=1
+            let ++j
+            echo $j
+            2
+            另一种对表达式的值的影响
+            unset i
+            unset j
+            i=1
+            j=1
+            let x=i++ 先赋值，在计算
+            let y=++j 先计算，再赋值
+            echo $i
+            2
+            echo $j
+            2
+            echo $x
+            1
+            echo $y
+            2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
