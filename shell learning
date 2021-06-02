@@ -140,7 +140,7 @@ ip=10.10.13.101
      Shell  自定义变量 VS 环境变量
    3.位置变量
      $1 $2 $3 $4 $5 $6 $7 $8 $9 ${10}
-        例：./shell0o.sh 10.10.13.101 ipfs yang //10.10.13.101将作为参数赋值给$1,ipfs将作为参数赋值给$2,yang将作为参数赋值给$3,依次类推
+        例：./shell0o.sh 10.10.13.101 ipfs yang  //10.10.13.101将作为参数赋值给$1,ipfs将作为参数赋值给$2,yang将作为参数赋值给$3,依次类推
    4.预定义变量
      $0 脚本名
      $* 所有的参数
@@ -152,7 +152,7 @@ ip=10.10.13.101
   变量赋值的方式：
     1.显示赋值
       变量名=变量值
-      例: ip=10.10.10.10
+       例: ip=10.10.10.10
           school="dongguang guangzhou" //值有空格的时候，就不许用双引号引起来，不然会报错
           today1=$(data +%F) 这是赋予值给today1 （）和``反引号的意思是一样的
           today2=`data +%F` 这是赋予值给today2
@@ -235,10 +235,89 @@ ip=10.10.13.101
             1
             echo $y
             2
+      ()    子shell中执行
+      (())  数值比较，运算 c语言
+      $()   命令替换
+      $(()) 整数运算
+      
+      {}
+      ${}
 
+      []    条件测试
+      [[]]  条件测试，支持正则 =~
+      $[]   整数运算
+      
+  执行脚本： ./shell.sh 在子shell中执行，需要加执行权限。    bash shell.sh 在子shell中执行，不需要加执行权限
+            .shell.sh 在当前shell中执行，不需要加执行权限   
 
+shell四：条件测试
+ 
+ 三类条件测试：文件测试，数值比较，字符串比较
+      tesh -d 测试返回值为真或假  !取反值
+      [ -d /home ]与test -d是一样的
+root@ansible-10:/home/king/shell# [ -d /home ]; echo $?
+0
+root@ansible-10:/home/king/shell# [[ -d /home ]]; echo $? 一个方括号返回值是0，两个方括号也是0
+0
+-----------------------------------------------------------
 
+      ( EXPRESSION ) 表达式这样写为真 
+              EXPRESSION is true
+       
+       ! EXPRESSION 表达式这样写为假
+              EXPRESSION is false
 
+       EXPRESSION1 -a EXPRESSION2 多个表达式用-a选项来串连起来
+              both EXPRESSION1 and EXPRESSION2 are true
+
+       EXPRESSION1 -o EXPRESSION2 -o选项是或者的意思
+              either EXPRESSION1 or EXPRESSION2 is true
+
+       -n STRING  
+              the length of STRING is nonzero -n 字符串非零
+
+       STRING equivalent to -n STRING 
+
+       -z STRING
+              the length of STRING is zero  -z 字符串为零
+
+       STRING1 = STRING2  =字符串1等于字符串2
+              the strings are equal
+
+       STRING1 != STRING2  !=字符串1不等于字符串2
+              the strings are not equal
+
+       INTEGER1 -eq INTEGER2 -eq整数1等于整数2
+              INTEGER1 is equal to INTEGER2
+       
+       INTEGER1 -ge INTEGER2 -ge整数1大于或等于整数2
+              INTEGER1 is greater than or equal to INTEGER2
+
+       INTEGER1 -gt INTEGER2 -gt整数1大于整数2
+              INTEGER1 is greater than INTEGER2
+
+       INTEGER1 -le INTEGER2 -le整数1小于等于整数2
+              INTEGER1 is less than or equal to INTEGER2
+
+       INTEGER1 -lt INTEGER2 -lt整数1小于整数2
+              INTEGER1 is less than INTEGER2
+
+       INTEGER1 -ne INTEGER2  -ne整数1不等于整数2
+              INTEGER1 is not equal to INTEGER2
+              
+    --------------------------------------------
+    文件测试 [操作符  文件或目录]
+    [-e dir|file]
+    [-d dir]  目录
+    [-f dir]  是否存在，而且是文件
+    [-r dir]  当前用户对该文件是否有读权限
+    [-x dir]  执行
+    [-w dir]  写
+    [-L dir]  软连接   
+ 例:root@ansible-10:/home/king/shell# [ ! -d /ccc ] && mkdir ccc  //如果没有CC目录，我就创建 
+    root@ansible-10:/home/king/shell# [  -d /bbb ] || mkdir bbb  //如果我有bbb目录，第二执行失败或者说如果我没有bbb目录，我就创建
+
+    
 
 
 
