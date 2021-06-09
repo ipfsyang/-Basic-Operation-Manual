@@ -244,7 +244,9 @@ Initializing machine ID from random generator. //这是一条提示语：正在�
       3、选择create virtual drive，并进入选raid界面
       4、select raid drive选择raid 按空格选择你要组建raid的硬盘，“x”是代表已选择
       5、按ctrl+s应用配置 按ctrl+N更换界面，到主界面可以看见你是否创建成功。按esc键退出并重启进系统，如果系统始终进不去可以重新拷贝下系统在进去系统查看raid10是否有。
-十七、      
+十七、 当centos或ubuntu系统出现无法建立ssl连接（Unable to establish SSL connection）时 
+       centos输入：# yum -y install openssl openssl-devel gcc make perl
+       ubuntu输入：#  --no-check-certificate
               
               
               
