@@ -316,7 +316,8 @@ root@ansible-10:/home/king/shell# [[ -d /home ]]; echo $? 一个方括号返回�
     [-L dir]  软连接   
  例:root@ansible-10:/home/king/shell# [ ! -d /ccc ] && mkdir ccc  //如果没有CC目录，我就创建 
     root@ansible-10:/home/king/shell# [  -d /bbb ] || mkdir bbb  //如果我有bbb目录，第二执行失败或者说如果我没有bbb目录，我就创建
-
+    
+字符串区别
     
 
 
