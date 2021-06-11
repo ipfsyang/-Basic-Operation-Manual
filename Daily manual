@@ -82,8 +82,17 @@ Initializing machine ID from random generator. //这是一条提示语：正在�
     lsblk //查看硬盘
  
     sudo fdisk /dev/nvme0n1 //分区nvme0n1
-    查看CPU物理个数
+   
+   查看CPU物理个数
+    
     cat /proc/cpuinfo| grep "physical id"| sort| uniq| wc -l
+    查询核数：
+
+    cat /proc/cpuinfo| grep "cpu cores"| uniq
+
+    查询逻辑CPU总数：
+
+    cat /proc/cpuinfo| grep "processor"| wc -l
 
 将4快盘都格式化，重复依次输入g，p，w，重启生效fdisk是一个创建和维护分区表的程序，它兼容DOS类型的分区表、BSD或者SUN类型的磁盘列表。重启后执行：
   
