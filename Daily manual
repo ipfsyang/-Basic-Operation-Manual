@@ -258,9 +258,19 @@ Initializing machine ID from random generator. //这是一条提示语：正在�
 十七、 当centos或ubuntu系统出现无法建立ssl连接（Unable to establish SSL connection）时 
        centos输入：# yum -y install openssl openssl-devel gcc make perl
        ubuntu输入：#  --no-check-certificate
-              
-              
-              
+十八、 ubuntu18或者20版本安装GPU驱动.
+      1、先在nvidia官网下载相应的驱动包并上传到linux系统里. 官网：https://www.nvidia.cn/Download/Find.aspx?lang=cn
+      2、chmod a+x NVIDIA-Linux-x86_64-430.50.run //赋予执行权限
+      3、sudo vi /etc/modprobe.d/blacklist.conf 按 G 到最后一行添加一条语句
+         blacklist nouveau
+      4、sudo uodate-initramfs -u 执行完重启
+      5、lsmod |grep nouveau //没有任何提示说明禁用成功
+      6、sudo ./NVIDIA-Linux-x86_64-430.50.run -no-x-check -no-nouveau-check -no-opengl-files没有任何报错信息，说明安装成功了
+      7、nvidia-smi //说明可以查看GPU了，重启试下是否会掉驱动
+      说明：
+      -no-x-check //不使用x服务
+      -no-nouveau-check //禁用nouveau
+      -no-opengl-files //只安装GPU驱动，不安装opengl文件 注:如果是新系统的话，先安装gcc和make包，否则会报错       
               
               
               
