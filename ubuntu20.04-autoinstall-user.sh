@@ -20,8 +20,7 @@ autoinstall:
     authorized-keys: []
     install-server: true
   storage:    config:
-    - {ptable: gpt, serial: SAMSUNG_MZ7LH480HAHQ-00005_S45PNC0R235922, wwn: '0x5002538e7121f462',
-      path: /dev/sdb, wipe: superblock-recursive, preserve: false, name: '', grub_device: false,
+    - {ptable: gpt,path: /dev/sdb, wipe: superblock-recursive, preserve: false, name: '', grub_device: false,
       type: disk, id: disk-sdb}
     - {device: disk-sdb, size: 536870912, wipe: superblock, flag: boot, number: 1,
       preserve: false, grub_device: true, type: partition, id: partition-2}
